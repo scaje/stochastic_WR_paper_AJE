@@ -1,39 +1,30 @@
 # -*- coding: utf-8 -*-
 """
-This scirpt takes the data from a paper 
-Table 1 in https://doi.org/10.1016/S0195-6663(03)00109-0
-For the Moderately Priced resaturant setting. 
+This script outlines the code used to produce the figures in Case study 1 in the manuscript
+ "The Wells-Riley Model Revisited: Randomness, Heterogeneity and Transient Behaviours"; 
+ Alexander J. Edwards, Marco-Felipe King, Catherine J. Noakes, Daniel Peckham, Martin Lopez-Garcia.
 
-The data is computed and then an erlang distribution is formed from these given 
-means and standard deviations by solving a system of simulatenous equations 
-where mu=k/lam
-SD=sqrt(k/lam^2)
+
+This data used in this script is taken from Table 1 in https://doi.org/10.1016/S0195-6663(03)00109-0 .
+
 
 CREATED 27/06/2023 AJE
 """
 import matplotlib.pyplot as plt
-import random, math
+import  math
 import numpy as np
-from scipy.integrate import odeint #for solving odes
-import matplotlib.colors as mcolors #colour name package
-from matplotlib.pyplot import cm #colour map package
-from pywaffle import Waffle #visual package for visuallising icons
-from matplotlib.ticker import StrMethodFormatter #to set decimal places in axis
-import time #for live run time of code
-from scipy.stats import binom # for the binomial distirbtion sampling 
 from scipy.stats import erlang #for the erland distrbution
 import sympy as sym
-from round_up import round_up, rounding
+from round_up import rounding
 import seaborn as sns
 import pandas
-import statistics as stat
+
 
 ################### DATA ###############################
-# The data here is taken from the paper descirbed above. The mean and standard deviation values
-# are given in minutes, so for consistency - all parameter values will be standardised to minutes
+#The data here is taken from Table 1 in https://doi.org/10.1016/S0195-6663(03)00109-0. 
+#The mean and standard deviation values are given in minutes, so for consistency - all parameter values will be standardised to minutes
+
 #values from data
-
-
 ###### CAFETERIA###
 mu_cafe = [12.6, 23.0, 33.0, 41.1, 44.0]
 sd_cafe = [3.8, 7.9, 11.3, 10.6, 14.2]
@@ -129,10 +120,9 @@ for j in range(n_data):
         ####################
         
         
-    #plt.legend(loc='center left',prop={'size': 8}, bbox_to_anchor=(1, 0.5))
-    plt.legend(fontsize=10)#plt.legend(fontsize=7, title='x $\sim$ Erlang(k,$\lambda$)')
-    plt.ylabel('$f_T(t)$')#plt.ylabel('f(x)')
-    plt.xlabel('T [min]')#plt.xlabel('x [min]')
+    plt.legend(fontsize=10)
+    plt.ylabel('$f_T(t)$')
+    plt.xlabel('T [min]')
     if j==1:
         plt.yticks(np.arange(0,0.06,0.01))
     #plt.title(set_type[j])
@@ -166,7 +156,6 @@ print('Relative difference in Means mu_reldif = %s'%mu_reldif)
 print('Relative difference in standard deviation sd_reldif =%s'%sd_reldif)
     
                 
-
 #############################################################
 #############################################################
 
@@ -175,7 +164,6 @@ print('Relative difference in standard deviation sd_reldif =%s'%sd_reldif)
 ##################### CALCULATING PROBABILITIES FOR RANDOM TIME ##############
 ##### EACH OUTBREAK SCENARIO IS THE SAME SET-UP FOR ALL OF THE DIFFERENT SETTINGS
 
-
 #Set up with initial parameters (based on previous models)
 # the data is given as minutes so all parameters will be in minutes also
 ###########################Ventilation and room parameters ##################
@@ -183,13 +171,11 @@ print('Relative difference in standard deviation sd_reldif =%s'%sd_reldif)
 q=6
 #pulmonary rate as volume/min)
 p=0.01
-
 #Ventilaation rate = m^3/min
 # for 3ACH
 #Q=[15, 15, 15]  #3ach[15,15,15]
 #for 1ACH
 Q=[5, 5, 5] 
-
 
 #volume of indoor space v= m^3
 #v=100
@@ -201,10 +187,8 @@ v=[300,300,300] #for the different voled[46.4,456,456] #volume based on papers -
 r_i = 0.00525  # this is viral decay/inactivation rate - range is given as [0,0.63] per hour in paper 
 r_d = 0.015  #  This is viral deposition rate - range is given as [0.3,1.5] per hour
 
-
 ##The REMOVAL RATE
 R = [(Q[i] + (v[i]*r_d) + (v[i]*r_i)) for i in range(len(Q))] 
-
 
 
 ################################################
@@ -256,7 +240,7 @@ for i in range(n_data):
         
 
 
-bar_loc = [1,2,0]
+bar_loc = [1,2,0] #this is to change the order of the scenarios when plotting
 for i in range(n_groups):
     plt.figure(dpi=750)#set dots per inch for better quality images   
     S = int(S0[i])
@@ -264,7 +248,7 @@ for i in range(n_groups):
     width = np.empty(S+1);
     width.fill(0.1)
     #colour = iter(cm.tab10(np.linspace(0, 1, 10)))    
-    for j in [2,0,1]:
+    for j in [2,0,1]:#this is to change the order of the scenarios when plotting
         #c=next(colour)
         plt.bar(nE[j][i] + bar_loc[j]*width, prob[j][i], width, label = '%s -> mean =%s' %(set_type[j],round(avg[j][i],2)), color=colour[j] )#k=%s, $\lambda$=%s' %(set_type[j], k_erl[j,i],round(lam_erl[j,i],4)), color=c)
         plt.vlines(avg[j][i], 0, 1,color=colour[j])
@@ -325,17 +309,6 @@ for j in range(n_data):
 
 
 #############Data frames for violin plot ####################
-####### TIME Datafram
-dtime_cafe={'Party Size = 2' : times_erl[0][:,1],'Party Size = 3' : times_erl[0][:,2],'Party Size = 4' : times_erl[0][:,3],'Party Size = 5' : times_erl[0][:,4]}
-dtime_restaurant={'Party Size = 2' : times_erl[1][:,1],'Party Size = 3' : times_erl[1][:,2],'Party Size = 4' : times_erl[1][:,3],'Party Size = 5' : times_erl[1][:,4]}
-dtime_fastfood={'Party Size = 2' : times_erl[2][:,1],'Party Size = 3' : times_erl[2][:,2],'Party Size = 4' : times_erl[2][:,3],'Party Size = 5' : times_erl[2][:,4]}
-
-df_timecafe = pandas.DataFrame(dtime_cafe)
-df_timerestaurant= pandas.DataFrame(dtime_restaurant)
-df_timefastfood= pandas.DataFrame(dtime_fastfood)
-
-df_time = [df_timecafe,df_timerestaurant, df_timefastfood]
-
 
 ### Wells Riley Per cApita Data frame
 dWRPC_cafe={'Party Size = 2' : WR_percap[0][:,1],'Party Size = 3' : WR_percap[0][:,2],'Party Size = 4' : WR_percap[0][:,3],'Party Size = 5' : WR_percap[0][:,4]}
@@ -361,17 +334,3 @@ for i in range(n_data):
     plt.legend()
     plt.show()
 
-#print('mean = %s'%(stat.mean(WR_percap[0][:,1])))
-#print('erlang %s' %(erl_percap[0,1]))
-
-
-# =============================================================================
-# #####TEST
-# #####test relationship between times and probabilities
-# for i in range(n_data):
-#     for j in range(1,n_groups):
-#         plt.scatter(times_erl[i][:,j], WR_percap[i][:,j])
-#     plt.yscale('log')
-#     plt.xscale('log')
-#     plt.show()
-# =============================================================================
