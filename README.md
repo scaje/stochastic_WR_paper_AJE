@@ -1,5 +1,6 @@
 # The Wells-Riley Model Revisited: Randomness, Heterogeneity and Transient Behaviours - AJE
-This repository contains the code and data to reproduce the research contained in the manuscript "The Wells-Riley Model Revisited: Randomness, Heterogeneity and Transient Behaviours"; Alexander J. Edwards, Marco-Felipe King, Catherine J. Noakes, Daniel Peckham, Martin Lopez-Garcia.
+This repository contains the supporting code and data for the following manuscript:
+> Edwards, A. J., King, M.-F., Noakes, C. J., Peckham, D., & López-García, M. (2024). The Wells–Riley model revisited: Randomness, heterogeneity, and transient behaviours. Risk Analysis, 44, 2125–2147. https://doi.org/10.1111/risa.14295
 
 # Software
 This code is written using Python in Spyder 4.1.4.
